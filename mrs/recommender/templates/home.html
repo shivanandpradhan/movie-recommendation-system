@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static%}
+
+{% block pageInfo %}
+    <h2>Movies Information</h2>
+{% endblock pageInfo %}
+
+{% block content %}
+    <div class="container my-2 d-flex flex-wrap gap-3 justify-content-center">
+        {% for movie in data %}
+
+            <div class="col-md-3 col-lg-3 col-sm-5">
+                <div class=" shadow card">
+                    <div class="card-body text-center">
+                        <img src={{movie.poster_path}} alt="" class="book-img-height card-img-top">
+                        <h5 class="my-2 text-dark">{{movie.title}}</h5>
+                        <div class="d-flex justify-content-center ">
+                            <p>{{movie.rating}}★</p>
+                            <p class="mx-1">({{movie.votes}})</p>
+                        </div>
+                        <a href="{% url 'recommend_movie' movie.id %}" class='btn btn-primary'>show more</a>
+                    </div>
+                </div>
+            </div>
+
+        {% endfor %}
+    </div>
+{% endblock content %}

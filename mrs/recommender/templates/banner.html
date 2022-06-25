@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Recommender</title>
+
+    <link rel="stylesheet" href="{% static 'css/banner.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+</head>
+<body>
+        <div class="banner-container">
+            <div class="banner-items">
+                  <h2> 
+                      Movie Recommendation System Project.
+                  </h2>
+                  <div class="slogan py-2">
+                      <h4>Collobrative Based Recommendation</h4>
+                      <h4>And</h4>
+                      <h4>Content Based Recommendation</h4>
+                      <h4 style="font-family:cursive;color:orange;">Let's Explore it</h4>
+                  </div>
+                  
+                  <div class="d-flex gap-2">
+                    <a href="{% url 'home' %}" class="btn-slide guest-btn">
+                        <button>Visit As Guest</button>
+                    </a>
+                    <a href="{% url 'login' %}" class="login-btn">
+                      <button>Login</button>
+                    </a>
+                  </div>
+                  <h3 class="pt-5">By Omar Seyam and Shivanand Pradhan</h3>
+              </div>
+        </div>
+    </div>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <script src="{% static 'js/popper.js' %}"></script>
+</body>
+</html>

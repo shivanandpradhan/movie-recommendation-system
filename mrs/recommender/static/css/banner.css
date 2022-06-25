@@ -1,0 +1,65 @@
+.banner-container{
+    width: 100%;
+    height : 100vh;
+    background: rgb(130, 40, 214);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    clip-path: polygon(49% 100%, 100% 79%, 100% 0, 0 0, 0 80%);
+}
+.banner-items {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.banner-items > h2{
+    font-size: 4vmax;
+    color: white;
+    font-family: "Droid Sans";
+    font-weight: 800;
+}
+
+.slogan{
+    margin: 2vmax 0;
+}
+.slogan > h4 {
+    color: whitesmoke;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    padding: 3px;
+}
+
+.guest-btn > button{
+    cursor: pointer;
+    font-size: 1.6em;
+    font-weight: 500;
+    padding: 9px 25px;
+    border: 2px solid rgba(20, 20, 66, 0.466);
+    border-radius: 5px;
+    background: white;
+   color: rgb(223, 51, 20);
+    box-shadow: 5px 4px 6px rgba(9, 9, 31, 0.466);
+    transition: all 0.3s;
+}
+.guest-btn > button:hover {
+   background: tomato;
+   color : white;
+}
+
+.login-btn > button{
+    cursor: pointer;
+    font-size: 1.6em;
+    font-weight: 500;
+    padding: 9px 25px;
+    border: 2px solid rgba(20, 20, 66, 0.466);
+    border-radius: 5px;
+    background: crimson;
+    color : white;
+    box-shadow: 5px 4px 6px rgba(9, 9, 31, 0.466);
+    transition: all 0.3s;
+}
+.login-btn > button:hover {
+   background: white;
+   color: crimson;
+}

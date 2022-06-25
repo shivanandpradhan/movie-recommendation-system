@@ -1,0 +1,70 @@
+{%extends 'base.html' %}
+{% load static %}
+
+{%block content%}
+
+    <div class="container pt-4">
+        
+        {% if messages %}
+            <div class="message">
+                {% for message in messages %}
+                <ul class="bg-msg-{{message.tags}}">
+                <li{% if message.tags %} class="py-2 text-{{ message.tags }}" style="list-style:none;" {% endif %}>{{ message }}</li>
+                </ul>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if rec_movies %}
+
+            <div class="d-flex gap-3 pt-2">
+                <div class="my-5 w-25">
+                    <h3>UserId : {{user_id}}</h3>
+                    <div>
+                        <img src="{% static 'images/avatar.png' %}" class="img-fluid" alt="">
+                    </div>
+                </div>
+                <div>
+                    <div class="container mt-4">
+                            <form class="d-flex gap-2 mx-2" action="{% url 'dashboard' %}" method='POST'>
+                                {% csrf_token %}
+                                <select class="form-select" id="user_choices" name="rec_choice">
+                                    {% if first %}
+                                        <option  value="1" selected="selected">Collabarative Based Recommendation</option>
+                                        <option  value="2">Matrix Based Recommendation</option>
+                                    {% endif %}
+                                    {% if second %}
+                                        <option value="1">Collabarative Based Recommendation</option>
+                                        <option value="2" selected="selected">Matrix Based Recommendation</option>
+                                    {% endif %}
+                                    </select>
+                                <button value="submit" class="btn btn-outline-success">Apply</button>
+                            </form>
+                    </div>
+                    <div class="mt-4 text-center container">
+                        <h5 class="text-danger">
+                            {% if first %} Results for Collabarative Based Recommendation {% endif %}
+                            {% if second %} Results for Matrix Based Recommendation {% endif %}
+                        </h5>
+                    </div>
+                    <div class="py-4 row d-flex flex-wrap gap-2 justify-content-center">
+                    {% for movie in rec_movies %}
+                        <div class="shadow card col-md-3 col-sm-4">
+                            <div class="card-body text-center">
+                                <img src={{movie.poster_path}} alt=""  style="height:15vmax;" class="movie-img-height card-img-top">
+                                <h5 class="my-2 text-dark">{{movie.title}}</h5>
+                                <div class="d-flex justify-content-center ">
+                                    <p>{{movie.rating}}★</p>
+                                    <p class="mx-1">({{movie.votes}})</p>
+                                </div>
+                                <a href="{% url 'recommend_movie' movie.id %}" class='btn btn-outline-primary'>show more</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+{%endblock content%}

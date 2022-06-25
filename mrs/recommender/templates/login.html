@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static%}
+
+{% block pageInfo %}
+    <h2>Login Page</h2>
+{% endblock pageInfo %}
+
+{% block content %}
+    <div class="container my-2 p-4 shadow login-width border border-dark">
+        <h4 class="text-center">Login Form</h4>
+        {% if messages %}
+            <div class="message">
+                {% for message in messages %}
+                <ul class="bg-msg-{{message.tags}}">
+                <li{% if message.tags %} class="py-2 text-{{ message.tags }}" style="list-style:none;" {% endif %}>{{ message }}</li>
+                </ul>
+                {% endfor %}
+            </div>
+        {% endif %}
+    
+        <form action="/user/login" method="POST">
+            {% csrf_token %}
+            {% for x in fm %}
+                <div class="my-3 form-group">
+                    {{x.label_tag}} {{x}} <small clas="text-warning">{{x.errors}}</small>
+                </div>
+            {% endfor %}
+            <input type="submit" value="Login" class="my-2 btn btn-primary" />
+            {% if fm.non_field_errors %}
+                {% for error in form.non_field_errors %}
+                    <p class="alert alert-danger my-3">{{error}}</p>
+                {% endfor %}
+            {% endif %}
+        </form>
+    </div>
+{% endblock content %}

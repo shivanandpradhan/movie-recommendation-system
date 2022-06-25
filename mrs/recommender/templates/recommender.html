@@ -1,0 +1,62 @@
+{%extends 'base.html' %}
+{% load static%}
+
+{% block pageInfo %}
+    <h2>Movie Information</h2>
+{% endblock pageInfo %}
+
+{%block content%}
+
+    <div class="container my-3">
+        
+        <div class="container d-flex py-3">
+            <div class="text-center" style="width:35%;">
+                <img src={{movieData.poster_path}}  class="img-fluid" style="height:25vmax;" alt={{movie.title}}>
+            </div>
+            
+            <div class="container">
+                <h3 class="my-2 text-dark">
+                    <span style="font-family:cursive;">{{movieData.title}}</span> {% if movieData.homePage %}
+                        <a href="{{movieData.homepage}}" class="btn btn-outline-danger mx-2">visit site</a>
+                    {% endif %}
+                </h3>
+                <h6>Rating : <span>{{movieData.rating}}★</span> </h6>
+                <h6>Votes : <span>{{movieData.votes}}</span> </h6>
+                <div class="d-flex gap-2 my-1 align-items-center">
+                    <h6> Genres : </h6>
+                    {% for genre in movieData.genres %}
+                        <a class="btn btn-outline-primary">{{genre}}</a>
+                    {% endfor %}
+                </div>
+                <h6>Overview</h6>
+                <div class="container">
+                    <p>{{movieData.overview}}</p>
+                </div>
+            </div>
+
+        </div>
+
+        {% if rec_movies %}
+            <div class="container mt-4">
+                <h4 class="px-4 text-danger">Recommendations for you ( Content Based Recommendations )</h4>
+            </div>
+
+            <div class="my-4 row d-flex flex-wrap gap-2 justify-content-center">
+                {% for movie in rec_movies %}
+                    <div class="shadow card col-md-2 col-sm-4">
+                        <div class="card-body text-center">
+                            <img src={{movie.poster_path}} alt=""  style="height:15vmax;" class="movie-img-height card-img-top">
+                            <h5 class="my-2 text-dark">{{movie.title}}</h5>
+                            <div class="d-flex justify-content-center ">
+                                <p>{{movie.rating}}★</p>
+                                <p class="mx-1">({{movie.votes}})</p>
+                            </div>
+                            <a href="{% url 'recommend_movie' movie.id %}" class='btn btn-primary'>show more</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+{%endblock content%}
