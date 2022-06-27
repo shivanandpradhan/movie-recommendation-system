@@ -1,4 +1,6 @@
 # import os
+from http.client import ResponseNotReady
+import random
 from django.http import HttpResponse, HttpResponseRedirect
 # import numpy as np
 # import pickle
@@ -26,6 +28,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # movies = pd.DataFrame(movies_dict)
 
 # similarity_matrix = pickle.load(open( os.path.join(BASE_DIR, "similarity_matrix.pkl"), 'rb'))
+
+con_movie_ids = [19995, 285, 206647, 49026, 49529, 559, 38757, 99861, 767, 209112, 1452, 10764, 58, 57201, 49521, 2454, 24428, 1865, 41154, 122917, 1930, 20662, 57158, 2268, 254, 597, 271110, 44833, 12155, 36668, 62211, 8373, 91314, 68728, 102382, 20526, 49013, 44912, 10193, 534, 168259, 72190, 127585, 54138, 81005, 64682, 9543, 68726, 38356, 217, 105864, 62177, 188927, 10681, 674, 8960, 6479, 118, 2062, 272, 10527, 18360, 2080, 605, 109445, 604, 76338, 76341, 13448, 10195, 13053, 19585, 57165, 62213, 177677, 7978, 5559, 49444, 10196, 956,  82703, 652, 80321, 140300, 56292, 81188, 13475, 557, 82702, 205584, 10048, 13183, 944, 1927, 72559, 7364, 2114, 1771, 36643, 8619, 50620, 65759, 1724, 267935, 281957, 77950, 44896, 270946, 2503, 9502, 102899, 101299, 228161, 74, 8961, 417859, 27576, 86834, 17578, 673, 6972, 82700, 10567, 181533, 38055, 671, 49524, 22]
 
 
 # storing in model MovieRecommender
@@ -93,36 +97,34 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 def bannerPage(request):
     return render(request, 'banner.html')
 
+def getMovieRecommendData( responseData ):
+    
+    data = {}
 
-
-
-
-
-
-def getMoviesData( results ):
-
-    data = []
-
-    for x in results:
-        movieData = {}
-        movieData['id'] = x['id']
-        movieData['title'] = x['title']
-        movieData['votes'] = x['vote_count']
-        movieData['rating'] = x['vote_average']
-        movieData['poster_path'] = "https://image.tmdb.org/t/p/w500/" + x['poster_path']
-
-        data.append(movieData)
-
+    try :
+        data['id'] = responseData['id']
+        data['title'] = responseData['title']
+        data['votes'] = responseData['vote_count']
+        data['rating'] = responseData['vote_average']
+        data['poster_path'] = "https://image.tmdb.org/t/p/w500/" + responseData['poster_path']
+    except :
+        return None
+    
     return data
 
 
 # home page ... 
 def homePage(request):
-    response = requests.get(f"https://api.themoviedb.org/3/discover/movie?api_key=73b7b94a31ab039b04bad943834342bd&language=en-US&page=50")
-    results = response.json()['results']
-    
-    data = getMoviesData(results)
+
+    data = []
+    for movie_id in random.sample(con_movie_ids, 12):
+        res = requests.get(f"https://api.themoviedb.org/3/movie/{movie_id}?api_key=73b7b94a31ab039b04bad943834342bd")
+        responseData = res.json()
         
+        temp = getMovieRecommendData(responseData)
+        if temp != None:
+            data.append(temp)
+
     return render(request, "home.html", {'data' : data})
 
 
@@ -146,17 +148,6 @@ def getMovieInformation( responseData ):
 
     return data
 
-def getMovieRecommendData( responseData ):
-    
-    data = {
-        'id' :  responseData['id'],
-        'title' : responseData['title'],
-        'votes' : responseData['vote_count'],
-        'rating' : responseData['vote_average'],
-        'poster_path' : "https://image.tmdb.org/t/p/w500/" + responseData['poster_path'],
-    }
-
-    return data
 
 def showMovieRecommendations(request, movie_id):
 
@@ -184,17 +175,13 @@ def showMovieRecommendations(request, movie_id):
         return render(request, 'recommender.html', {'movieData' : movieData})
 
 
-def generateMovieData( responseData ) :
+from .forms import UserSignUpForm
 
-    data = {
-        'id' :  responseData['id'],
-        'title' : responseData['title'],
-        'votes' : responseData['vote_count'],
-        'rating' : responseData['vote_average'],
-        'poster_path' : "https://image.tmdb.org/t/p/w500/" + responseData['poster_path'],
-    }
+# user signup
+def signup(request):
+    fm = UserSignUpForm()
+    return render(request, 'signup.html', {'fm' : fm}) 
 
-    return data;
 
 # user recommendations (for dashboard Page)
 def userDashboard(request):
@@ -205,33 +192,9 @@ def userDashboard(request):
     user = User.objects.get(username=request.user)
     user_id = int(user.username)
 
-    rec_choice = "1"
-
-    if request.method == "POST" :
-        rec_choice = request.POST['rec_choice']
-
-        if rec_choice == "2" :
-            userObj = MatrixMovieRecommender.objects.get(userId = user_id)
-            movie_ids = [userObj.movie1, userObj.movie2, userObj.movie3, userObj.movie4, userObj.movie5]
-
-            rec_movies = []
-            for id in movie_ids :
-                response = requests.get(f"https://api.themoviedb.org/3/movie/{id}?api_key=73b7b94a31ab039b04bad943834342bd")
-                responseData = response.json()
-
-                if 'success' in responseData.keys():
-                    continue
-                    
-                data = generateMovieData(responseData)
-                rec_movies.append(data)
-
-            return render(request, 'dashboard.html', {'user_id' : user_id, 'rec_movies' : rec_movies, 'second' : rec_choice})
-    
-
-    # finding user object inside collabarativeMovieRecommender 
-    userObj = CollabarativeMovieRecommender.objects.get(userId = user_id)
-    movie_ids = [userObj.movie1, userObj.movie2, userObj.movie3, userObj.movie4, userObj.movie5, userObj.movie6]
-
+    #finding user id inside matrix movie recommender
+    userObj = MatrixMovieRecommender.objects.get(userId = user_id)
+    movie_ids = [userObj.movie1, userObj.movie2, userObj.movie3, userObj.movie4, userObj.movie5]
 
     # generating recommended movie data of the user..
     rec_movies = []
@@ -242,10 +205,10 @@ def userDashboard(request):
         if 'success' in responseData.keys():
             continue
         
-        data = generateMovieData(responseData)
+        data = getMovieRecommendData(responseData)
         rec_movies.append(data)
 
-    return render(request, 'dashboard.html', {'user_id' : user_id, 'rec_movies' : rec_movies, 'first' : rec_choice})
+    return render(request, 'dashboard.html', {'user_id' : user_id, 'rec_movies' : rec_movies})
 
 
 ## user model creation

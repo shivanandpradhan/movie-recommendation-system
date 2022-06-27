@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <div>
-                    <div class="container mt-4">
+                    {% comment %} <div class="container mt-4">
                             <form class="d-flex gap-2 mx-2" action="{% url 'dashboard' %}" method='POST'>
                                 {% csrf_token %}
                                 <select class="form-select" id="user_choices" name="rec_choice">
@@ -40,11 +40,10 @@
                                     </select>
                                 <button value="submit" class="btn btn-outline-success">Apply</button>
                             </form>
-                    </div>
-                    <div class="mt-4 text-center container">
+                    </div> {% endcomment %}
+                    <div class="mt-2 text-center container">
                         <h5 class="text-danger">
-                            {% if first %} Results for Collabarative Based Recommendation {% endif %}
-                            {% if second %} Results for Matrix Based Recommendation {% endif %}
+                            Results for Matrix Based Recommendation
                         </h5>
                     </div>
                     <div class="py-4 row d-flex flex-wrap gap-2 justify-content-center">
